@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quorum Docs sidebar prototype</title>
+  <!-- Throwaway prototype: three card-sidebar layouts, switchable via ?variant=A/B/C. No Google integration or persistence. -->
+  <style>
+    :root { font: 14px/1.4 Arial, sans-serif; color: #202124; background: #f8fafd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    .prototype-note { padding: 8px 18px; background: #fff4ce; color: #5f4700; border-bottom: 1px solid #e9d995; font-size: 12px; }
+    .docs-top { height: 65px; display: flex; align-items: center; gap: 16px; padding: 9px 18px; background: #fff; border-bottom: 1px solid #e1e5ea; }
+    .docs-icon { width: 31px; height: 39px; background: #4285f4; color: white; border-radius: 3px; font-size: 23px; display: grid; place-items: center; }
+    .docs-title { font-size: 18px; line-height: 24px; }
+    .docs-menu { color: #5f6368; font-size: 12px; word-spacing: 10px; }
+    .share { margin-left: auto; background: #c2e7ff; border: 0; border-radius: 20px; padding: 9px 18px; }
+    .avatar { background: #7657a8; color: white; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; }
+    .toolbar { height: 42px; background: #edf2fa; border-bottom: 1px solid #d6dce5; color: #5f6368; display: flex; align-items: center; gap: 18px; padding: 0 22px; font-size: 13px; }
+    .app { display: grid; grid-template-columns: minmax(380px, 1fr) 336px 49px; height: calc(100vh - 144px); min-height: 560px; }
+    .canvas { overflow: auto; padding: 28px 24px 80px; }
+    .paper { width: min(700px, 100%); min-height: 850px; margin: auto; background: white; box-shadow: 0 2px 10px #0002; padding: 68px 65px; }
+    .paper h1 { font: 28px/1.2 Georgia, serif; margin: 0 0 20px; }
+    .paper h2 { font: 19px/1.25 Georgia, serif; margin: 32px 0 12px; }
+    .paper p { font: 15px/1.75 Georgia, serif; color: #3c4043; }
+    .paper .fake-line { height: 10px; background: #e7ebf0; margin: 13px 0; border-radius: 5px; }
+    .paper .short { width: 62%; }
+    .sidebar { background: white; border-left: 1px solid #dce1e7; overflow: auto; padding-bottom: 95px; }
+    .sidebar-head { height: 54px; border-bottom: 1px solid #e6e9ed; display: flex; align-items: center; gap: 10px; padding: 0 17px; position: sticky; top: 0; background: white; z-index: 1; }
+    .quorum-mark { width: 27px; height: 27px; border-radius: 8px; background: #233d77; color: white; display: grid; place-items: center; font-weight: 700; }
+    .sidebar-head strong { font-size: 16px; }
+    .sidebar-head .close { margin-left: auto; color: #777; font-size: 18px; }
+    .rail { background: #fff; border-left: 1px solid #e6e9ed; padding: 13px 8px; display: flex; flex-direction: column; align-items: center; gap: 18px; color: #6680ad; }
+    .rail span { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; }
+    .rail .active { background: #dce9ff; color: #244b91; font-weight: 700; }
+    .pad { padding: 17px; }
+    .eyebrow { color: #64748b; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; font-weight: 700; }
+    .section-title { font-size: 16px; font-weight: 700; margin: 5px 0; }
+    .muted { color: #697586; font-size: 12px; }
+    .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 13px; background: #e9f1ff; color: #2554a4; font-size: 11px; font-weight: 700; }
+    .status.paused { background: #fff1ce; color: #805800; }
+    .status.approved { background: #e5f3e9; color: #216c3c; }
+    .rule { border-top: 1px solid #e6e9ed; margin: 17px 0; }
+    .card { border: 1px solid #dce2e8; border-radius: 10px; padding: 13px; margin: 13px 0; }
+    .card.blue { background: #edf4ff; border-color: #d6e5ff; }
+    .card.amber { background: #fff6e3; border-color: #f0dfac; }
+    .card.green { background: #eaf7ec; border-color: #c8e9d0; }
+    .card h3 { font-size: 14px; margin: 0 0 5px; }
+    .card p { margin: 5px 0 10px; color: #536071; font-size: 12px; }
+    .button { border: 1px solid #c9d3e0; background: white; color: #25467f; border-radius: 18px; padding: 8px 12px; font-weight: 700; font-size: 12px; }
+    .button.primary { border-color: #2857a8; background: #2857a8; color: white; }
+    .button:disabled { color: #9aa3b0; background: #edf0f4; border-color: #e0e5ea; cursor: not-allowed; }
+    .button-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+    .person { display: flex; align-items: center; gap: 9px; padding: 10px 0; border-bottom: 1px solid #eef0f3; font-size: 12px; }
+    .person:last-child { border: 0; }
+    .bubble { flex: none; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: #e4e9f1; color: #304767; font-weight: 700; }
+    .person .name { font-weight: 700; }
+    .person .detail { margin-left: auto; color: #677485; text-align: right; }
+    .link { color: #2857a8; font-size: 12px; font-weight: 700; text-decoration: none; }
+    .mini-label { color: #657287; font-size: 11px; font-weight: 700; margin-top: 14px; }
+    .progress { height: 7px; background: #e8ecf2; border-radius: 8px; overflow: hidden; margin: 11px 0 4px; }
+    .progress i { display: block; width: 33%; height: 100%; background: #4b78ce; }
+    .steps { margin: 16px 0 0; padding-left: 19px; border-left: 2px solid #dce4ef; }
+    .step { position: relative; padding: 0 0 18px 13px; }
+    .step:before { content: ''; position: absolute; width: 9px; height: 9px; left: -25px; top: 3px; background: #4676ca; border: 2px solid white; border-radius: 50%; }
+    .step strong { font-size: 12px; }
+    .step p { margin: 3px 0; font-size: 11px; color: #677485; }
+    .variant-name { color: #58677a; font-size: 11px; padding: 12px 17px 0; }
+    .switcher { position: fixed; left: 50%; transform: translateX(-50%); bottom: 17px; z-index: 5; display: flex; align-items: center; gap: 8px; background: #202b3f; color: white; border-radius: 28px; box-shadow: 0 6px 22px #0004; padding: 7px 9px; white-space: nowrap; }
+    .switcher button { border: 0; border-radius: 50%; background: #43516b; color: white; width: 29px; height: 29px; }
+    .switcher select { background: #34435d; color: white; border: 1px solid #62708a; border-radius: 12px; padding: 5px; font-size: 12px; }
+    .switcher .caption { font-size: 12px; min-width: 122px; text-align: center; }
+    .toast { position: fixed; right: 80px; bottom: 73px; background: #26354d; color: white; border-radius: 7px; padding: 9px 12px; box-shadow: 0 3px 12px #0003; display: none; font-size: 12px; z-index: 6; }
+    @media (max-width: 800px) { .app { grid-template-columns: minmax(0,1fr) 330px; } .rail { display: none; } .paper { padding: 36px; } }
+    @media (max-width: 620px) { .canvas { display: none; } .app { display: block; } .sidebar { height: 100%; width: 100%; } .docs-menu, .toolbar { display: none; } .docs-top { height: 64px; } .app { height: calc(100vh - 96px); } .share { display: none; } .switcher { max-width: calc(100vw - 10px); } }
+  </style>
+</head>
+<body>
+  <div class="prototype-note">PROTOTYPE · Simulated Google Docs chrome and Quorum add-on cards. Buttons show intended actions only; no Google or Quorum account is connected.</div>
+  <header class="docs-top"><div class="docs-icon">▤</div><div><div class="docs-title">API Governance Decision</div><div class="docs-menu">File Edit View Insert Format Tools Extensions Help</div></div><button class="share">Share</button><div class="avatar">A</div></header>
+  <div class="toolbar">↶ &nbsp; ↷ <span>100%</span><span>Normal text</span><span>Arial</span><span>11</span><span> B &nbsp; I &nbsp; U </span></div>
+  <main class="app"><div class="canvas"><article class="paper"><h1>API Governance Decision</h1><p>Proposal for how the platform team should govern the next version of our public API.</p><h2>Recommendation</h2><p>Adopt a common review policy for breaking changes, with a documented exception path for urgent incidents. This document records the decision and its rationale.</p><div class="fake-line"></div><div class="fake-line"></div><div class="fake-line short"></div><h2>Open questions</h2><p>The security and reliability implications are being reviewed in parallel. Feedback remains in Google Docs comments and suggestions.</p><div class="fake-line"></div><div class="fake-line short"></div></article></div><aside class="sidebar"><div class="sidebar-head"><div class="quorum-mark">Q</div><strong>Quorum</strong><span class="close">×</span></div><div id="sidebar-content"></div></aside><div class="rail"><span>▦</span><span>◴</span><span>☷</span><span class="active">Q</span></div></main>
+  <div class="switcher"><button id="previous" aria-label="Previous variant">←</button><span class="caption" id="variant-label"></span><button id="next" aria-label="Next variant">→</button><select id="scenario" aria-label="Scenario"><option value="approver">Approver view</option><option value="owner">Owner view</option><option value="paused">Paused workflow</option></select></div>
+  <div class="toast" id="toast">Prototype only — this would open Quorum or update the workflow.</div>
+  <script>
+    const variants = ['A', 'B', 'C'];
+    const names = {A:'Action first', B:'Team status', C:'Review path'};
+    const params = new URLSearchParams(location.search);
+    let variant = variants.includes(params.get('variant')) ? params.get('variant') : 'A';
+    let scenario = ['approver','owner','paused'].includes(params.get('scenario')) ? params.get('scenario') : 'approver';
+    const content = document.getElementById('sidebar-content');
+    const scenarioSelect = document.getElementById('scenario');
+    scenarioSelect.value = scenario;
+    const button = (label, primary=false, disabled=false) => `<button class="button ${primary ? 'primary' : ''}" ${disabled ? 'disabled' : ''} data-demo>${label}</button>`;
+    const status = () => `<span class="status ${scenario === 'paused' ? 'paused' : ''}">${scenario === 'paused' ? 'Ⅱ Paused' : '● In Review'}</span>`;
+    const people = () => `<div class="person"><span class="bubble">A</span><span class="name">Alex${scenario === 'approver' || scenario === 'paused' ? ' (you)' : ''}</span><span class="detail">Awaiting Review</span></div><div class="person"><span class="bubble">P</span><span class="name">Priya</span><span class="detail">Approved ✓</span></div><div class="person"><span class="bubble">J</span><span class="name">Jordan</span><span class="detail">Changes Requested</span></div>`;
+    const summaryHeader = () => `<div class="eyebrow">Current document</div><div class="section-title">API Governance Decision</div>${status()} <span class="muted">· Due Oct 2</span>`;
+    const action = () => scenario === 'paused'
+      ? `<div class="card amber"><h3>Review is paused</h3><p>Maya paused this workflow. Review actions are unavailable until it resumes.</p></div>`
+      : scenario === 'owner'
+      ? `<div class="card amber"><h3>Jordan needs an owner response</h3><p>Read Jordan's feedback in the Doc, then request re-review when ready.</p><div class="button-row">${button('Request re-review',true)}${button('Open comments')}</div></div>`
+      : `<div class="card blue"><h3>Your approval is needed</h3><p>Review the Doc and its comments, then choose your response.</p><div class="button-row">${button('Approve',true)}${button('Changes Requested')}${button('Clarification Needed')}</div></div>`;
+    function variantA() { return `<div class="variant-name">A · The next action takes the top slot</div><div class="pad">${summaryHeader()}${action()}<div class="rule"></div><div class="mini-label">APPROVERS · 1 OF 3 APPROVED</div>${people()}<div class="rule"></div><a class="link" href="#" data-demo>Open full workflow in Quorum ↗</a></div>`; }
+    function variantB() { return `<div class="variant-name">B · The team and overall progress lead</div><div class="pad">${summaryHeader()}<div class="card"><h3>1 of 3 approved</h3><div class="progress"><i></i></div><p>One response needs the Document Owner. One Approver still needs to review.</p></div><div class="mini-label">EVERYONE'S STATUS</div>${people()}<div class="rule"></div><div class="eyebrow">What happens next</div>${action()}<a class="link" href="#" data-demo>View workflow history in Quorum ↗</a></div>`; }
+    function variantC() { return `<div class="variant-name">C · A compact review path and handoff</div><div class="pad">${summaryHeader()}<div class="steps"><div class="step"><strong>Started by Maya</strong><p>Sep 24 · Parallel review opened</p></div><div class="step"><strong>Priya approved</strong><p>Sep 25 · Approval retained</p></div><div class="step"><strong>Jordan requested changes</strong><p>Maya's response is needed</p></div><div class="step"><strong>${scenario === 'paused' ? 'Review paused' : scenario === 'owner' ? 'Respond to Jordan' : 'Your review is next'}</strong><p>${scenario === 'paused' ? 'Approvers should stop reviewing' : 'Current attention in this workflow'}</p></div></div>${action()}<div class="rule"></div><a class="link" href="#" data-demo>Open full workflow in Quorum ↗</a><p class="muted">Detailed history and the full review queue live in Quorum.</p></div>`; }
+    function render() { content.innerHTML = {A:variantA,B:variantB,C:variantC}[variant](); document.getElementById('variant-label').textContent = `${variant} · ${names[variant]}`; scenarioSelect.value = scenario; const next = new URL(location.href); next.searchParams.set('variant',variant); next.searchParams.set('scenario',scenario); history.replaceState({},'',next); }
+    function cycle(n) { variant = variants[(variants.indexOf(variant)+n+variants.length)%variants.length]; render(); }
+    document.getElementById('previous').onclick = () => cycle(-1);
+    document.getElementById('next').onclick = () => cycle(1);
+    scenarioSelect.onchange = () => { scenario = scenarioSelect.value; render(); };
+    document.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; if (e.target.matches('input, textarea, select, [contenteditable]')) return; cycle(e.key === 'ArrowLeft' ? -1 : 1); });
+    document.addEventListener('click', e => { if (!e.target.closest('[data-demo]')) return; e.preventDefault(); const toast = document.getElementById('toast'); toast.style.display='block'; clearTimeout(window.toastTimer); window.toastTimer=setTimeout(()=>toast.style.display='none',2500); });
+    render();
+  </script>
+</body>
+</html>
