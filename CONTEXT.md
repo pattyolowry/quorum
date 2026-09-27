@@ -4,6 +4,10 @@ Quorum coordinates the review and approval of project-governance documents while
 
 ## Language
 
+**Customer Organization**:
+A Google Workspace organization represented by one Quorum tenant, including its multiple domains and participating departments.
+_Avoid_: Department tenant, domain tenant
+
 **Project Governance Document**:
 A Google Doc used to support a decision about whether or how an engineering project may progress and requiring approval from named people.
 _Avoid_: Workflow document, approval document
