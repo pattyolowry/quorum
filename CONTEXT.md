@@ -21,7 +21,7 @@ One attempt to obtain the required Approvals within an Approval Workflow. A new 
 _Avoid_: Document revision, separate workflow
 
 **Document Owner**:
-The person responsible for initiating and managing a Project Governance Document's Approval Workflow. Initially this is the document's owner, though workflow ownership may later be transferable.
+The internal person who initiates and manages a Project Governance Document's Approval Workflow. This role does not require Google Drive file ownership; workflow ownership may later be transferable.
 _Avoid_: Author, workflow administrator
 
 **Approver**:
