@@ -2,7 +2,8 @@
 
 Disposable feasibility harness for [#10](https://github.com/pattyolowry/quorum/issues/10),
 on `prototype/http-docs-addon`. Not production implementation. **Deployed and
-installed for the development account; main review paths passed in Docs.** See
+installed for the development account; the tested card experience is viable as
+agreed.** See
 [results.md](results.md) for the evidence checklist and verified cost controls.
 
 The personal Google account is a development test identity only. It cannot
@@ -34,8 +35,9 @@ this experiment. No production Quorum service exists yet.
 An ephemeral wizard at `/private/tmp/quorum-addon-setup.sh` walks through these
 steps on the current workstation. It stores only `QUORUM_PROJECT_ID` and
 `TEST_USER_EMAIL` in the ignored `.env`. No client secret or access token is
-needed from the user. The local Google Cloud CLI is not installed, so use Cloud
-Shell or install/authenticate the CLI before deployment.
+needed from the user. A temporary local Google Cloud CLI was installed for this
+session; a fresh machine can use Cloud Shell or install/authenticate the CLI
+before deployment.
 
 ## Agent deployment sequence after prerequisites
 
