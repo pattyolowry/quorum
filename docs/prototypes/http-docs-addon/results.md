@@ -2,7 +2,8 @@
 
 Issue: [#10](https://github.com/pattyolowry/quorum/issues/10).
 
-Status: prepared, not deployed or tested in Google Docs. No feasibility verdict yet.
+Status: deployed and installed for the development test account; not yet exercised
+in Google Docs. No feasibility verdict yet.
 Environment selected: personal Google account, development-only. This cannot
 validate Workspace organization activation or membership (issue #11).
 
@@ -10,6 +11,28 @@ Local validation (2026-10-27): JavaScript syntax, generated manifest fields,
 health response, rejection of an unsigned review action (401), malformed JSON
 handling (400), and navigation stub passed. Setup wizard passes `bash -n`.
 These checks do not validate signed Google events, rendering or live consent.
+
+Deployment validation (2026-10-27 local): Cloud Run reports Ready. The private
+service has one service-level and revision-level maximum instance, no minimum
+instances, request-based CPU allocation, 1 vCPU and 256 MiB memory. A dedicated
+runtime identity has no additional project roles; the separate build identity
+uses Cloud Run Builder. Only the Google add-on system identity has an explicit
+service-level Invoker grant. The unpublished Docs-only deployment is installed
+for the CLI user's account.
+
+Cost controls verified: a USD 5 monthly Cloud Run spend cap is Configured for the
+test project. A separate USD 5 alert-only budget covers the billing account,
+including other projects if any; it is broader than a project-only alert.
+
+Deployed smoke checks: an unsigned health request is rejected (403); an
+authenticated owner health request succeeds (200); attempting a review action
+with that owner's identity token instead of the add-on system identity is
+rejected (401). No signed Google add-on callback has been validated yet.
+
+Known harness limitation: the full-workflow stub lives behind Cloud Run IAM, so
+a normal browser tab without a bearer token cannot display it. This is a test
+hosting limitation, not evidence that card links are unsupported; use an
+accessible stub or the real web app before treating navigation as validated.
 
 | Capability | Required observation | Live result |
 | --- | --- | --- |
