@@ -53,8 +53,8 @@ function workflowCard(state, title) {
   widgets.push(buttons(button('Refresh', '/refresh')));
   widgets.push(text('<b>Test controls</b> · Switching views simulates roles; it does not change Google identity.'));
   widgets.push(buttons(button('Approver view', '/view/approver'), button('Owner view', '/view/owner'), button('Reset test', '/reset')));
-  widgets.push({buttonList: {buttons: [{text: 'Open full workflow in Quorum (test stub)', onClick: {
-    openLink: {url: `${base}/workflow`, openAs: 'FULL_SIZE'}
+  widgets.push({buttonList: {buttons: [{text: 'Open workflow (test page)', onClick: {
+    openLink: {url: 'https://github.com/pattyolowry/quorum/blob/prototype/http-docs-addon/docs/prototypes/http-docs-addon/workflow-stub.md', openAs: 'FULL_SIZE'}
   }}]}});
   return card('Quorum · Action first', widgets);
 }

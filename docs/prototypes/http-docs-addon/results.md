@@ -2,8 +2,9 @@
 
 Issue: [#10](https://github.com/pattyolowry/quorum/issues/10).
 
-Status: deployed and installed for the development test account; not yet exercised
-in Google Docs. No feasibility verdict yet.
+Status: deployed and exercised in a real Google Doc with the development test
+account. Main review paths passed by human observation; remaining checks below.
+No final feasibility verdict yet.
 Environment selected: personal Google account, development-only. This cannot
 validate Workspace organization activation or membership (issue #11).
 
@@ -27,7 +28,8 @@ including other projects if any; it is broader than a project-only alert.
 Deployed smoke checks: an unsigned health request is rejected (403); an
 authenticated owner health request succeeds (200); attempting a review action
 with that owner's identity token instead of the add-on system identity is
-rejected (401). No signed Google add-on callback has been validated yet.
+rejected (401). Subsequent successful live card actions demonstrate that signed
+Google add-on callbacks and the allowlisted user-token checks work together.
 
 Known harness limitation: the full-workflow stub lives behind Cloud Run IAM, so
 a normal browser tab without a bearer token cannot display it. This is a test
@@ -36,13 +38,13 @@ accessible stub or the real web app before treating navigation as validated.
 
 | Capability | Required observation | Live result |
 | --- | --- | --- |
-| Open/reopen | Add-on is discoverable in a real Doc; reopen preserves current test state | Not run |
-| Per-file access | Deny, retry, grant; current Doc ID appears only after grant | Not run |
-| Identity | Verify user token and bind by issuer/sub; reject a second account | Not run |
-| Approver card | Action first; all three response buttons readable at sidebar width | Not run |
-| Document Owner card | Owner attention and re-review; pause/resume refresh | Not run |
-| Paused card | Stop-review message precedes summary; review actions unavailable | Not run |
-| Callback/refresh | Response updates; reopen/refresh returns that state | Not run |
+| Open/reopen | Add-on is discoverable in a real Doc; reopen preserves current test state | Human confirmed Action first card; Approved response and Fully Approved status survived panel close/reopen and Refresh |
+| Per-file access | Deny, retry, grant; current Doc ID appears only after grant | Initial grant path reached workflow card; deny/retry on a second test Doc pending |
+| Identity | Verify user token and bind by issuer/sub; reject a second account | Live allowlisted Google user and system tokens accepted; test-only issuer/sub binding exercised; second-account rejection not tested live |
+| Approver card | Action first; all three response buttons readable at sidebar width | Human exercised Approve, Changes Requested, and Clarification Needed successfully |
+| Document Owner card | Owner attention and re-review; pause/resume refresh | Human confirmed Changes Requested → owner attention → Request re-review → Awaiting Review; Approval → Clarification Needed reopened In Review with owner attention |
+| Paused card | Stop-review message precedes summary; review actions unavailable | Human confirmed Pause/Approver view and review buttons returning after Resume; visual prominence not independently inspected |
+| Callback/refresh | Response updates; reopen/refresh returns that state | Human confirmed response transitions and Fully Approved after close/reopen plus Refresh |
 | Navigation | Full-workflow test stub opens without losing document context | Not run |
 | Auth failures | Declined scope, revoked consent, wrong account; actionable recovery | Not run |
 | Latency | Measure click-to-render for cold and warm calls; distinguish server duration | Not run |
@@ -52,6 +54,11 @@ Record browser, date, deployment revision, opaque account labels, repeat count,
 observations and timings here. Do not include tokens, email addresses, user IDs,
 document IDs/titles or real document content. Server logs intentionally contain
 only route, HTTP status and server elapsed milliseconds.
+
+The live results above are the human's reported observations in this session,
+not an automated browser run or recording. Each stated path has been exercised
+once; browser/version and visible timings have not yet been captured. Memory
+surviving a panel reopen does not demonstrate persistence across process restarts.
 
 The harness simulates roles in one allowlisted user's isolated workflow. It
 validates signed Google identity against a test-only Quorum record keyed by

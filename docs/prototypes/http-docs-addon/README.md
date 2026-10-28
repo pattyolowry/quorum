@@ -2,7 +2,7 @@
 
 Disposable feasibility harness for [#10](https://github.com/pattyolowry/quorum/issues/10),
 on `prototype/http-docs-addon`. Not production implementation. **Deployed and
-installed for the development account, but not yet exercised in Docs.** See
+installed for the development account; main review paths passed in Docs.** See
 [results.md](results.md) for the evidence checklist and verified cost controls.
 
 The personal Google account is a development test identity only. It cannot
