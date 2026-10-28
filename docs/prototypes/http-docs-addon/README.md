@@ -1,9 +1,9 @@
 # Quorum HTTP Docs add-on spike
 
 Disposable feasibility harness for [#10](https://github.com/pattyolowry/quorum/issues/10),
-on `prototype/http-docs-addon`. Not production implementation. **Deployed and
-installed for the development account; the tested card experience is viable as
-agreed.** See
+on `prototype/http-docs-addon`. Not production implementation. **The tested card
+experience is viable as agreed. Live test resources have been torn down and the
+add-on uninstalled; redeploy before testing again.** See
 [results.md](results.md) for the evidence checklist and verified cost controls.
 
 The personal Google account is a development test identity only. It cannot

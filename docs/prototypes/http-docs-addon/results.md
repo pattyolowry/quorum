@@ -116,3 +116,19 @@ documented limits, not stress-test results from this one-Approver harness.
 The runnable artifact and this matrix are the resolution evidence. No recording
 was made. Keep the spike on its prototype branch; none of its test-only account
 or role behavior is a change to the settled domain model.
+
+## Teardown after validation
+
+At the human's request, the test add-on was uninstalled and the Cloud Run
+service, dedicated container repository/images, and build-source uploads/bucket
+were removed. The disposable source bucket's soft-delete retention was cleared
+before removal. Verified afterward: no Cloud Run service in the test region,
+no Artifact Registry repository across the project, no Cloud Storage bucket,
+and add-on `installed=false`.
+
+The Google Cloud project, unpublished add-on deployment definition, dedicated
+service identities, OAuth configuration and budgets remain for later reuse.
+The code and evidence remain in GitHub. Previous test usage can still appear on
+billing reports after teardown; the removed hosting and storage resources are
+no longer available. Redeploy and reinstall before attempting further live
+tests, especially for #11.
