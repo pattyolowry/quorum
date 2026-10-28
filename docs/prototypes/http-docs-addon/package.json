@@ -1,0 +1,8 @@
+{
+  "name": "quorum-http-docs-addon-spike",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node server.mjs", "manifest": "node manifest.mjs"},
+  "engines": {"node": ">=22"},
+  "dependencies": {"google-auth-library": "^10.0.0"}
+}
